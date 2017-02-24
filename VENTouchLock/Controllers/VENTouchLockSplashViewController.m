@@ -2,7 +2,9 @@
 #import "VENTouchLockEnterPasscodeViewController.h"
 #import "VENTouchLock.h"
 
-@interface VENTouchLockSplashViewController ()
+@interface VENTouchLockSplashViewController () {
+    BOOL _preventTouchAfterPass;
+}
 @property (nonatomic, assign) BOOL isSnapshotViewController;
 @end
 
@@ -63,9 +65,8 @@
     [super viewDidAppear:animated];
 
     if (!self.isSnapshotViewController) {
-        if ([VENTouchLock shouldUseTouchID]) {
+        if ([VENTouchLock shouldUseTouchID] && !_preventTouchAfterPass) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                
                 [self showTouchID];
             });
         }
@@ -117,6 +118,7 @@
     __weak __typeof__(self) weakSelf = self;
     enterPasscodeVC.willFinishWithResult = ^(BOOL success) {
         if (success) {
+            _preventTouchAfterPass = YES;
             [weakSelf unlockWithType:VENTouchLockSplashViewControllerUnlockTypePasscode];
         }
         else {
