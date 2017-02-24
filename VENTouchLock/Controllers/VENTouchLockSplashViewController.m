@@ -61,6 +61,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+
     if (!self.isSnapshotViewController) {
         if ([VENTouchLock shouldUseTouchID]) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -130,6 +131,10 @@
     if (!self.presentedViewController) {
         if (![VENTouchLock shouldUseTouchID]) {
             [self showPasscodeAnimated:NO];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showTouchID];
+            });
         }
     }
 }
